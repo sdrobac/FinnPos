@@ -448,7 +448,7 @@ Word * LemmaExtractor::extract_feats(const std::string &word_form,
   if (has_digit(word_form))
     { feats.push_back( get_feat_id("DIGIT") ); }
 
-  return new Word(word_form, feats, LabelVector(), "");
+  return new Word(word_form, feats, LabelVector(), "", "");
   static_cast<void>(label);
 }
 

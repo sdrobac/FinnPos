@@ -57,7 +57,7 @@ Entry get_next_line(std::istream &in)
 
   Entry res;
 
-  if (fields.size() != 5)
+  if (fields.size() != 6)
     { 
       throw SyntaxError();
     }
@@ -91,6 +91,7 @@ Entry get_next_line(std::istream &in)
     } 
 
   res.annotations = fields.at(4);
+  res.omorfi_orig = fields.at(5);
 
   return res;
 }

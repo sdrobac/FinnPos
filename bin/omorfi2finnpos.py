@@ -53,7 +53,8 @@ def convert(pname, ifile, convert_type):
         line = line.strip()
 
         if line == '' and wf != '':
-
+        
+            omorfiOrig = analyses
             if convert_type == 'ftb' and len(analyses) > 0:
                 analyses = filter_ftb_analyses(analyses)
 
@@ -77,7 +78,8 @@ def convert(pname, ifile, convert_type):
             if labels != []:
                 label_str = ' '.join(labels)
                 
-            print('%s\t%s\t%s\t%s\t%s' % (wf, feats, '_', label_str, lemma_str))
+            print('%s\t%s\t%s\t%s\t%s\t%s' % (wf, feats, '_', label_str, lemma_str, omorfiOrig))
+            # print('%s\t%s\t%s\t%s\t%s\t%s' % (wf, feats, '_', label_str, lemma_str, omorfiOrig), file=stderr)
 
             wf, analyses = '', []
             

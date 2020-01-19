@@ -62,7 +62,7 @@ def main(pname, iname, ifile, oname, ofile, olog, freq_words):
             else:
                 fields = line.split('\t')
 
-                if len(fields) != 1 and len(fields) != 3 and len(fields) != 5:
+                if len(fields) != 1 and len(fields) != 3 and len(fields) != 5 and len(fields) != 6:
                     print(fields)
                     olog.write(("Line %u in file %s: Incorrect field count %u. " +
                                 "Should be 1, 3 or 5." + linesep) 
@@ -89,6 +89,7 @@ def main(pname, iname, ifile, oname, ofile, olog, freq_words):
             lemma = '_'
             label = '_'
             ann   = '_'
+            omorfiOrig = '_'
             
             if len(line) == 1:
                 wf = line[0]
@@ -97,8 +98,8 @@ def main(pname, iname, ifile, oname, ofile, olog, freq_words):
                 wf, lemma, label = line
                 ann = "_"
             else:
-                wf, feats, lemma, label, ann = line
-
+                wf, feats, lemma, label, ann, omorfiOrig  = line
+            # print(omorfiOrig, file=stderr)
             features = []                
 
             if feats != '_':
@@ -140,9 +141,9 @@ def main(pname, iname, ifile, oname, ofile, olog, freq_words):
             feat_str = " ".join(filter(None, features))
         
         
-            ofile.write(("%s\t%s\t%s\t%s\t%s" + linesep) 
+            ofile.write(("%s\t%s\t%s\t%s\t%s\t%s" + linesep) 
                         % 
-                        (wf, feat_str, lemma, label, ann))
+                        (wf, feat_str, lemma, label, ann, omorfiOrig))
         
         ofile.write(linesep)
         

@@ -291,11 +291,12 @@ void Tagger::label_stream(std::istream &in)
 	      if (s.at(j).get_word_form() == "_#_")
 		{ continue; }
 
-	      std::cout << s.at(j).get_word_form() 
-			<< "\t_\t" << s.at(j).get_lemma() 
+		const Word &word = s.at(j);
+	      std::cout << word.get_word_form() 
+			<< "\t_\t" << word.get_lemma() 
 			<< "\t" << label_extractor.
-		get_label_string(s.at(j).get_label()) 
-			<< "\t" << s.at(j).get_annotations() << std::endl;
+		get_label_string(word.get_label()) 
+			<< "\t" << word.get_annotations() << "\t" << word.get_omorfi_orig() << std::endl;
 	    }
 	  std::cout << std::endl;
 	}

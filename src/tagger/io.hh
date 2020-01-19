@@ -51,6 +51,7 @@ struct Entry
   std::string lemma;
   StringVector labels;
   std::string annotations;
+  std::string omorfi_orig;
 };
 
 /**

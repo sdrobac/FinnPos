@@ -68,7 +68,8 @@ Sentence::Sentence(std::istream &ifile,
 	  sentence.push_back(Word(entry.token,
 				  pt.get_feat_templates(entry.feat_templates),
 				  label_extractor.get_labels(entry.labels),
-				  entry.annotations));
+				  entry.annotations,
+				  entry.omorfi_orig));
 	  sentence.back().set_analyzer_lemmas(label_extractor);
 
 	  if (is_gold)
@@ -123,7 +124,8 @@ Sentence get_lemmatizer_input(std::istream &ifile,
 	  words.push_back(Word(entry.token,
 				  pt.get_feat_templates(entry.feat_templates),
 				  label_extractor.get_labels(entry.labels),
-				  entry.annotations));
+				  entry.annotations,
+				  entry.omorfi_orig));
 	  words.back().set_analyzer_lemmas(label_extractor);
 
 	  unsigned int label = label_extractor.get_label(entry.labels[0]);

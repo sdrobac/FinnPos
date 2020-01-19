@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 from sys import stdin, stdout, stderr, argv
+from difflib import get_close_matches
 
 HASH="<HASH>"
 all_lemmas = 0
@@ -37,8 +38,12 @@ for line in stdin:
         print('')
         stdout.flush()
     else:
-        wf, feats, lemma, label, ann = line.split('\t')
-
+        wf, feats, lemma, label, ann, omorfiOrig = line.split('\t')
+        # print (wf)
+        if (omorfiOrig == '[]'):
+            print (omorfiOrig)
+            continue
+        # print(ann)
         lemmas = ann
         if ann.find(' ') != -1:
             lemmas = ann[:ann.find(' ')]
@@ -54,5 +59,31 @@ for line in stdin:
             lemma = lemma_dict[label]
             lemma = lemma.lower()
             lemma = lemma.replace('#','')
+        
+        
+        origOmorfiList = (omorfiOrig.replace("['",'').replace("']",'').replace("]', '[WORD_ID=", ']\t[WORD_ID=')).split('\t')
+        
+        if (len(origOmorfiList) == 1):
+            print (origOmorfiList[0])
 
-        print('%s\t%s\t%s\t%s\t%s' % (wf, feats, lemma.replace(HASH,"#"), label, ann))
+        if (len(origOmorfiList) > 1):
+            
+            # Filter only those omorfi results that have matching lemma with finnpos
+            matchingOmorfi = []
+            for line in origOmorfiList:
+                if ('[WORD_ID='+lemma.replace(HASH,"#")+']') in line:
+                    matchingOmorfi.append(line)
+               
+
+            # Choose just one
+            oneOmorfi = get_close_matches('[WORD_ID='+lemma.replace(HASH,"#")+']'+ label.replace("]|[","][") , matchingOmorfi, 1)
+
+            # if there is one match
+            if (len(oneOmorfi) == 1):
+                # print ('%s' % oneOmorfi[0].strip().replace("['",'').replace("]'","]").replace("'[",'['))
+                print ('%s' % oneOmorfi[0].strip())
+            else:
+                # one from the original
+                # print (origOmorfiList[0].replace("['",'').replace("']",''))
+                print (origOmorfiList[0])
+

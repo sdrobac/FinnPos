@@ -48,7 +48,8 @@ public:
   Word(const std::string &word_form,
        const FeatureTemplateVector &feature_templates,
        const LabelVector &labels,
-       const std::string &annotations);
+       const std::string &annotations,
+       const std::string &omorfi_orig);
 
   int get_recall(void);
 
@@ -78,6 +79,8 @@ public:
 
   std::string get_annotations(void) const;
 
+  std::string get_omorfi_orig(void) const;
+
   void unset_lemma(void);
   void unset_label(void);
 
@@ -95,6 +98,7 @@ public:
   std::string           word_form;
   std::string           lemma;
   std::string           annotations;
+  std::string           omorfi_orig;
 
   unsigned int          label;
   

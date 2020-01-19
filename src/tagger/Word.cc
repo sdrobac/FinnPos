@@ -35,10 +35,12 @@ Word::Word(unsigned int boundary_label):
 Word::Word(const std::string &word_form,
 	   const FeatureTemplateVector &feature_templates,
 	   const LabelVector &labels,
-	   const std::string &annotations):
+	   const std::string &annotations,
+	   const std::string &omorfi_orig):
   word_form(word_form),
   lemma(NO_STRING),
   annotations(annotations),
+  omorfi_orig(omorfi_orig),
   label(NO_LABEL),
   label_candidates(labels),
   feature_templates(feature_templates)
@@ -120,6 +122,9 @@ void Word::unset_label(void)
 
 std::string Word::get_annotations(void) const
 { return annotations; }
+
+std::string Word::get_omorfi_orig(void) const
+{ return omorfi_orig; }
 
 std::string Word::to_string(LabelExtractor &label_extractor) const
 {
