@@ -1,15 +1,45 @@
-finnpos.py:_finnpos.so
+CXX=g++
+CXXFLAGS=-Wall -Wextra -g -O3 -Wfatal-errors -Werror -std=c++0x
 
-_finnpos.so:LabelExtractorWrapper.o LabelExtractorWrapper_wrap.o \
-Data.o io.o LabelExtractor.o ParamTable.o process_aux.o Sentence.o SuffixLabelMap.o \
-TrellisCell.o Word.o
-	g++ -shared $^ -o $@ -lpython2.7 
+MODULES=io Word LemmaExtractor LabelExtractor Sentence ParamTable \
+Data TrellisColumn Trellis Trainer PerceptronTrainer SGDTrainer \
+TrellisCell Tagger TaggerOptions SuffixLabelMap process_aux
 
-LabelExtractorWrapper_wrap.o:LabelExtractorWrapper_wrap.cxx
-	g++ -fPIC -c $^ -o $@ -I.. -I/usr/include/python2.7
+TESTS=$(MODULES:%=TEST_%)
+OBJS=$(MODULES:%=%.o)
+PROGS=finnpos-train finnpos-label finnpos-eval finnpos-print-params finnpos-filter-params finnpos-lemmatize
 
-%.o:../%.cc
-	g++ -fPIC -c $^ -o $@ -I.. -I/usr/include/python2.7
+all:$(PROGS)
 
-LabelExtractorWrapper_wrap.cxx:LabelExtractorWrapper.i
-	swig -c++ -python $^
+install:all
+	cp $(PROGS) ../../bin
+
+uninstall:
+	rm -f $(PROGS:%=../../bin/%)
+
+clean:
+	rm -f $(OBJS) $(TESTS) $(PROGS)
+
+doc-clean:
+	rm -Rf html latex
+
+doc: html
+
+html:
+	doxygen Doxyfile
+
+test:$(TESTS)
+	for t in $(TESTS); \
+	do                 \
+	echo $$t && ./$$t || echo "FAILED"; \
+	done
+
+TEST_%:$(OBJS) %.cc
+	$(CXX) $(CXXFLAGS) -DTEST_$*_cc -o $@ $^
+
+finnpos-train:finnpos-train.cc $(OBJS)
+finnpos-label:finnpos-label.cc $(OBJS)
+finnpos-lemmatize:finnpos-lemmatize.cc $(OBJS)
+finnpos-eval:finnpos-eval.cc $(OBJS)
+finnpos-print-params:finnpos-print-params.cc $(OBJS)
+finnpos-filter-params:finnpos-filter-params.cc $(OBJS)
