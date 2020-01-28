@@ -45,6 +45,7 @@ def main(pname, iname, ifile, oname, ofile, olog, freq_words):
     """ Read input from ifile and write extracted features to ofile. 
         This function doesn't check its argument streams. """
 
+    runtimeFlag = False
     olog.write(('%s: Reading from %s. Writing to %s.' + linesep) % (pname, iname, oname))
 
     i = 0
@@ -97,7 +98,10 @@ def main(pname, iname, ifile, oname, ofile, olog, freq_words):
             elif len(line) == 3:
                 wf, lemma, label = line
                 ann = "_"
+            elif len(line) == 5:
+                wf, feats, lemma, label, ann  = line
             else:
+                runtimeFlag = True
                 wf, feats, lemma, label, ann, omorfiOrig  = line
             # print(omorfiOrig, file=stderr)
             features = []                
@@ -140,11 +144,14 @@ def main(pname, iname, ifile, oname, ofile, olog, freq_words):
             
             feat_str = " ".join(filter(None, features))
         
-        
-            ofile.write(("%s\t%s\t%s\t%s\t%s\t%s" + linesep) 
+            if (runtimeFlag):
+                ofile.write(("%s\t%s\t%s\t%s\t%s\t%s" + linesep) 
                         % 
                         (wf, feat_str, lemma, label, ann, omorfiOrig))
-        
+            else:
+                ofile.write(("%s\t%s\t%s\t%s\t%s" + linesep) 
+                        % 
+                        (wf, feat_str, lemma, label, ann))
         ofile.write(linesep)
         
         # Ensure that the line is written immediately so that features

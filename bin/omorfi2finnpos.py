@@ -88,7 +88,7 @@ def convert(pname, ifile, convert_type):
             continue
 
         elif (convert_type == 'ftb' and 
-              line == 'OMORFI_VERSION_≥_14_©_GNU_GPL_V3'):
+              line == '+?'):
             print('')
             entry = ''
 

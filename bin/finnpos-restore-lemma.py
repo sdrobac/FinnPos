@@ -60,8 +60,10 @@ for line in stdin:
             lemma = lemma.lower()
             lemma = lemma.replace('#','')
         
+        # print('%s\t%s\t%s\t%s\t%s' % (wf, feats, lemma.replace(HASH,"#"), label, ann), file=stderr)
         
         origOmorfiList = (omorfiOrig.replace("['",'').replace("']",'').replace("]', '[WORD_ID=", ']\t[WORD_ID=')).split('\t')
+        # print (origOmorfiList, file=stderr)
         
         if (len(origOmorfiList) == 1):
             print (origOmorfiList[0])

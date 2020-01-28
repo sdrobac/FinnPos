@@ -292,11 +292,13 @@ void Tagger::label_stream(std::istream &in)
 		{ continue; }
 
 		const Word &word = s.at(j);
+		const auto oMorfiOrig = word.get_omorfi_orig();
+		const auto oMorfiOrigForPrint = (oMorfiOrig.empty()) ? "" : std::string("\t") + oMorfiOrig;
 	      std::cout << word.get_word_form() 
 			<< "\t_\t" << word.get_lemma() 
 			<< "\t" << label_extractor.
 		get_label_string(word.get_label()) 
-			<< "\t" << word.get_annotations() << "\t" << word.get_omorfi_orig() << std::endl;
+			<< "\t" << word.get_annotations() << oMorfiOrigForPrint << std::endl;
 	    }
 	  std::cout << std::endl;
 	}
