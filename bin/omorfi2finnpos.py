@@ -1,5 +1,6 @@
 from sys import stdin, argv, stderr, stdout
 from re import findall
+from re import sub
 
 def get_lemma(string, convert_type):
     if convert_type == 'ftb':
@@ -43,6 +44,9 @@ def filter_ftb_analyses(analyses):
     min_wbs = min(map(lambda x: x.count('[WORD_ID='), analyses))
     return list(filter(lambda x: x.count('[WORD_ID=') == min_wbs, analyses))
 
+def remove_underscores(analyses):
+    return list(sub(r"_\d", "", x) for x in analyses)
+
 def convert(pname, ifile, convert_type):
     wf       = ''
     analyses = []
@@ -55,9 +59,14 @@ def convert(pname, ifile, convert_type):
         if line == '' and wf != '':
         
             omorfiOrig = analyses
+            # withouHomonyms = remove_underscores(analyses)
+            # print(omorfiOrig, file=stderr)
+            # print (withouHomonyms, file=stderr)
+            
             if convert_type == 'ftb' and len(analyses) > 0:
+                # analyses = remove_underscores(analyses)
                 analyses = filter_ftb_analyses(analyses)
-
+                # print(analyses, file=stderr)
             lemmas = get_lemmas(analyses, convert_type)
             lemmas = list(set(lemmas))
 
@@ -79,7 +88,6 @@ def convert(pname, ifile, convert_type):
                 label_str = ' '.join(labels)
                 
             print('%s\t%s\t%s\t%s\t%s\t%s' % (wf, feats, '_', label_str, lemma_str, omorfiOrig))
-            # print('%s\t%s\t%s\t%s\t%s\t%s' % (wf, feats, '_', label_str, lemma_str, omorfiOrig), file=stderr)
 
             wf, analyses = '', []
             
@@ -88,7 +96,8 @@ def convert(pname, ifile, convert_type):
             continue
 
         elif (convert_type == 'ftb' and 
-              line == '+?'):
+            line == 'OMORFI_VERSION_≥_14_©_GNU_GPL_V3'):
+              # line == '+?'):
             print('')
             entry = ''
 

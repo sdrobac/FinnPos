@@ -2,6 +2,7 @@
 
 from sys import stdin, stdout, stderr, argv
 from difflib import get_close_matches
+from re import sub
 
 HASH="<HASH>"
 all_lemmas = 0
@@ -40,9 +41,9 @@ for line in stdin:
     else:
         wf, feats, lemma, label, ann, omorfiOrig = line.split('\t')
         # print (wf)
-        if (omorfiOrig == '[]'):
-            print (omorfiOrig)
-            continue
+        # if (omorfiOrig == '[]'):
+            # print ("Bla", omorfiOrig)
+            # continue
         # print(ann)
         lemmas = ann
         if ann.find(' ') != -1:
@@ -60,12 +61,19 @@ for line in stdin:
             lemma = lemma.lower()
             lemma = lemma.replace('#','')
         
+
+        sourceFinnPos = '[SOURCE=FINNPOS][WORD_ID='+ lemma.replace(HASH,"#") +']'+ label.replace("|",'')
+        # print(sourceFinnPos)
         # print('%s\t%s\t%s\t%s\t%s' % (wf, feats, lemma.replace(HASH,"#"), label, ann), file=stderr)
         
-        origOmorfiList = (omorfiOrig.replace("['",'').replace("']",'').replace("]', '[WORD_ID=", ']\t[WORD_ID=')).split('\t')
+
+        origOmorfiList = ['[SOURCE=OMORFI]' + x for x in (omorfiOrig.replace("['",'').replace("']",'').replace("]', '[WORD_ID=", ']\t[WORD_ID=')).split('\t')]
         # print (origOmorfiList, file=stderr)
         
         if (len(origOmorfiList) == 1):
+            if (origOmorfiList[0] == '[SOURCE=OMORFI][]'):
+                print (sourceFinnPos)
+                continue
             print (origOmorfiList[0])
 
         if (len(origOmorfiList) > 1):
@@ -73,19 +81,27 @@ for line in stdin:
             # Filter only those omorfi results that have matching lemma with finnpos
             matchingOmorfi = []
             for line in origOmorfiList:
-                if ('[WORD_ID='+lemma.replace(HASH,"#")+']') in line:
+                cleanLine = sub(r"_\d", "", line)
+                # print("Line: ", cleanLine)
+                if ('[WORD_ID='+lemma.replace(HASH,"#")+']') in cleanLine:
                     matchingOmorfi.append(line)
-               
-
+                    
+            if (len(matchingOmorfi) == 1 ):
+                print ('%s' % matchingOmorfi[0].strip())
+                continue
+                
+            # print ("matchingOmorfi", matchingOmorfi)
+            # print('[WORD_ID='+lemma.replace(HASH,"#")+']'+ label.replace("]|[","]["))
+            
             # Choose just one
             oneOmorfi = get_close_matches('[WORD_ID='+lemma.replace(HASH,"#")+']'+ label.replace("]|[","][") , matchingOmorfi, 1)
-
+ 
             # if there is one match
             if (len(oneOmorfi) == 1):
                 # print ('%s' % oneOmorfi[0].strip().replace("['",'').replace("]'","]").replace("'[",'['))
                 print ('%s' % oneOmorfi[0].strip())
+            elif(len(oneOmorfi) == 0 and len(matchingOmorfi) > 1):
+                print ('%s' % matchingOmorfi[0].strip())
             else:
-                # one from the original
-                # print (origOmorfiList[0].replace("['",'').replace("']",''))
                 print (origOmorfiList[0])
 
